@@ -1,0 +1,17 @@
+# Pycharm
+.idea
+
+# VS code
+.vscode
+
+# python cache
+**/*.pyc
+
+# Jupyter notebook
+.ipynb_checkpoints/
+
+# Virtualenv
+venv/
+
+# Dataset
+datasets
