@@ -4,6 +4,8 @@ from .pose import Pose
 import numpy as np
 
 class Dataset:
+    """Representation of a dataset
+    """
     def __init__(self, folder_path):
         """Read the dataset from folder
         """
@@ -35,6 +37,8 @@ class Dataset:
 
 
 class TrajectoryData:
+    """Representation of the trajectory data
+    """
     def __init__(self, path):
         """Read relative poses data and reconstruct the poses
         """

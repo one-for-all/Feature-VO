@@ -1,10 +1,10 @@
-"""Plot given the trajectory data
+"""Utils for plotting the trajectory data
 """
 import numpy as np
 
 
 def plot_positions(ax, poses, color='green'):
-    """Plot the 3D trajectory's positions
+    """Plot the 3D trajectory positions
     """
     traj = []
     for pose in poses:
@@ -15,6 +15,8 @@ def plot_positions(ax, poses, color='green'):
 
 
 def plot_pose(ax, pose, length=1, style='-'):
+    """Plot a single 3D pose
+    """
     colors = ['r', 'g', 'b']
     lines = sum([ax.plot([], [], [], c=c) for c in colors], [])
     pos = pose.t
@@ -31,5 +33,7 @@ def plot_pose(ax, pose, length=1, style='-'):
 
 
 def plot_poses(ax, poses, length=1, style='-'):
+    """Plot 3D trajectory poses
+    """
     for pose in poses:
         plot_pose(ax, pose, length=length, style=style)

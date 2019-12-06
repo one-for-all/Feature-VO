@@ -4,6 +4,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation 
 
 class Pose(object):
+    """3D Pose implementation
+    """
     def __init__(self):
         self.T = np.identity(4)
     

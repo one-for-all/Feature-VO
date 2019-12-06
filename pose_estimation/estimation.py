@@ -18,6 +18,8 @@ def fix_scale(pose1, pose2):
     return fixed_pose
 
 class PoseEstimator:
+    """Estimator for computing relative pose from 2 images
+    """
     def __init__(self, K, method="SIFT"):
         """
         Args:
@@ -31,6 +33,8 @@ class PoseEstimator:
         self.K = K
 
     def estimate(self, im1, im2):
+        """Estimate the relative pose from 2 images
+        """
         detector = self.detector
         
         def find_kp(im):

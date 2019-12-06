@@ -2,6 +2,8 @@
 """
 
 class RelativePoseWriter:
+    """Convenience class for writing relative poses into a file
+    """
     def __init__(self, path):
         self.f = open(path, "w+")
     
