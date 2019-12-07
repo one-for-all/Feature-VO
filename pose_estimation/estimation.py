@@ -36,16 +36,30 @@ class PoseEstimator:
     def estimate(self, im1, im2):
         """Estimate the relative pose from 2 images
         """
+        E, pts1_norm, pts2_norm = self.compute_essential(im1, im2)
+
+        # TODO: Currently when not enough points, assume no movement
+        # Somehow when given only 5 points, the obtained E becomes not 3x3
+        if E is None or E.shape != (3, 3):
+            print("Warn: encounter invalid Essential matrix")
+            return Pose()
+
+        R, t = self.recover_pose(E, pts1_norm, pts2_norm)
+        # points, R, t, mask = cv2.recoverPose(E, pts1_norm, pts2_norm)
+
+        pose = Pose.from_t_R(t.flatten(), R)
+        pose = pose.inverse()
+        return pose
+
+    def compute_essential(self, im1, im2):
+        """Compute the essential matrix, and corresponding points
+        Return:
+            Essential matrix,
+        """
         detector = self.detector
 
-        def find_kp(im):
-            """Detect keypoints
-            """
-            kp = detector.detect(im, None)
-            return kp
-
-        kp1 = find_kp(im1)
-        kp2 = find_kp(im2)
+        kp1 = self.find_kp(im1)
+        kp2 = self.find_kp(im2)
         kp1, des1 = detector.compute(im1, kp1)
         kp2, des2 = detector.compute(im2, kp2)
 
@@ -60,18 +74,23 @@ class PoseEstimator:
         E, mask = cv2.findEssentialMat(pts1_norm, pts2_norm, focal=1.0,
                     pp=(0, 0), method=cv2.RANSAC, prob=0.999, threshold=0.001)
 
-        # TODO: Currently when not enough points, assume no movement
-        # Somehow when given only 5 points, the obtained E becomes not 3x3
-        if E is None or E.shape != (3, 3):
-            print("Warn: encounter invalid Essential matrix")
-            return Pose()
+        pts1_norm, pts2_norm = self.masked_points(pts1_norm, pts2_norm, mask)
+        return E, pts1_norm, pts2_norm
 
-        R, t = self.recover_pose(E, pts1_norm, pts2_norm, mask)
-        # points, R, t, mask = cv2.recoverPose(E, pts1_norm, pts2_norm)
+    @staticmethod
+    def masked_points(pts1, pts2, mask):
+        """Get points that are masekd true
+        Return:
+            true pts1, true pts2
+        """
+        mask = mask.astype(np.bool)
+        return pts1[mask], pts2[mask]
 
-        pose = Pose.from_t_R(t.flatten(), R)
-        pose = pose.inverse()
-        return pose
+    def find_kp(self, im):
+        """Detect keypoints
+        """
+        kp = self.detector.detect(im, None)
+        return kp
 
     @staticmethod
     def match_kp(des1, des2, method):
@@ -113,8 +132,7 @@ class PoseEstimator:
             matched_kp2.append(kp2[match.trainIdx].pt)
         return np.asarray(matched_kp1), np.asarray(matched_kp2)
 
-    @staticmethod
-    def recover_pose(E, pts1_norm, pts2_norm, mask):
+    def recover_pose(self, E, pts1_norm, pts2_norm):
         """Find the proper rotation and translation from
             the Essential matrix, by cheirality constraint
 
@@ -153,24 +171,23 @@ class PoseEstimator:
         Ht[3, :3] = -2 * Vh[2, :]
 
         votes = [0, 0, 0, 0]
-        for pt1, pt2, valid in zip(pts1_norm, pts2_norm, mask):
-            if valid:
-                q = cv2.triangulatePoints(PI, PA, pt1.T, pt2.T)
-                c1 = q[2] * q[3]
-                c2 = np.matmul(PA, q)[2] * q[3]
-                assert(c1 != 0 and c2 != 0)
-                if c1 > 0 and c2 > 0:
-                    votes[0] += 1
-                    continue
-                if c1 < 0 and c2 < 0:
-                    votes[1] += 1
-                    continue
-                qc = np.matmul(Ht,  q)
-                if q[2] * qc[3] > 0:
-                    votes[2] += 1
-                    continue
-                else:
-                    votes[3] += 1
+        for pt1, pt2 in zip(pts1_norm, pts2_norm):
+            q = cv2.triangulatePoints(PI, PA, pt1.T, pt2.T)
+            c1 = q[2] * q[3]
+            c2 = np.matmul(PA, q)[2] * q[3]
+            assert(c1 != 0 and c2 != 0)
+            if c1 > 0 and c2 > 0:
+                votes[0] += 1
+                continue
+            if c1 < 0 and c2 < 0:
+                votes[1] += 1
+                continue
+            qc = np.matmul(Ht,  q)
+            if q[2] * qc[3] > 0:
+                votes[2] += 1
+                continue
+            else:
+                votes[3] += 1
 
         idx = votes.index(max(votes))
         candidates = [(Ra, tu), (Ra, -tu), (Rb, tu), (Rb, -tu)]

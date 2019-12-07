@@ -4,7 +4,6 @@
 import argparse
 from dataset_util.reader import Dataset
 from dataset_util.writer import RelativePoseWriter
-from image_processing.util import read_rgb
 from pose_estimation.estimation import PoseEstimator, fix_scale
 import numpy as np
 import cv2
@@ -15,10 +14,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Estimate the trajectory given a sequence of images")
     parser.add_argument("dataset_folder", type=str, help="path to dataset",
-                        nargs='?', default="./datasets/traj1_frei_png")
-    parser.add_argument("estimate_fpath", type=str, nargs='?', 
+                        nargs='?', default="./datasets/living_room_traj2_frei_png")
+    parser.add_argument("estimate_fpath", type=str, nargs='?',
                          default="estimate.txt", help="estimate output file path")
-    parser.add_argument("gt_fpath", type=str, nargs='?', 
+    parser.add_argument("gt_fpath", type=str, nargs='?',
                          default="gt.txt", help="groudtruth output file path")
     args = parser.parse_args()
 
@@ -45,11 +44,9 @@ if __name__ == "__main__":
     for i in tqdm(range(start, end-step+1, step)):
         a_idx = i
         b_idx = i+step
-        im_a_path = dataset.rgb_folder + "/{}.png".format(a_idx)
-        im_b_path = dataset.rgb_folder + "/{}.png".format(b_idx)
-        im_a = read_rgb(im_a_path)
-        im_b = read_rgb(im_b_path)
-        
+        im_a = dataset.image_at(a_idx)
+        im_b = dataset.image_at(b_idx)
+
         # Display
         cv2.imshow(window_a, im_a)
         cv2.imshow(window_b, im_b)
