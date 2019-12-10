@@ -42,3 +42,5 @@ Things that can be set in the `main.py` are:
 * `python experiment.py`
 
 This will print at the end the errors for step sizes ranging from 30 to 2.
+
+Note that the data obtained for the error plot in the paper has been copied to `plot_util/plot.py`. Therefore, calling `python plot.py` will generate the exact same figure as in paper.
