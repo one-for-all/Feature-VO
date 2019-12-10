@@ -22,7 +22,6 @@ def plot_pose(ax, pose, length=1, style='-'):
     lines = sum([ax.plot([], [], [], c=c) for c in colors], [])
     pos = pose.t
     start_points = np.array([pos, pos, pos])
-    # end_points = np.array([[length, 0, 0], [0, 0, -length], [0, length, 0]]).T
     end_points = np.array([[length, 0, 0], [0, length, 0], [0, 0, length]]).T
     end_points = np.matmul(pose.R, end_points).T + start_points
 

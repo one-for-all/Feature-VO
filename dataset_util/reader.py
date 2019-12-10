@@ -58,13 +58,11 @@ class TrajectoryData:
     def __init__(self, path):
         """Read relative poses data and reconstruct the poses
         """
-        # TODO: Read initial pose
         initial_pose = Pose()
         # Rotate such that camera z-axis facing front
         initial_pose.R = np.array([[1, 0, 0],
                                    [0, 0, 1],
                                    [0, -1, 0]])
-        # initial_pose.t = [0, 0, -2.5]
         self.poses = [initial_pose]
         with open(path, "r") as f:
             line = f.readline()
