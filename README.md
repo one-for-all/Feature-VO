@@ -20,7 +20,7 @@ Because the datasets are large (on the order of hundreds of MB), they are not in
 Once the dataset has been downloaded, perform the following steps:
 
 1. Create a directory called `datasets` at the root of this project.
-2. Unzip the dataset, and place it in the datasets folder.
+2. Unzip the dataset, and place it in the `datasets` folder.
 3. Rename the `*.freibug` file as `groundtruth.txt`.
 
 ----------------------------------
@@ -29,10 +29,10 @@ Once the dataset has been downloaded, perform the following steps:
 
 ### To estimate the trajectory for a dataset
 
-1. `python main.py` which optionally takes the path to the dataset folder. This will estimate the trajectory, and write it into a file.
-2. `python plot_traj.py` will plot the trajectory against the ground-truth.
+1. `python main.py` which optionally takes the path to the dataset folder as an argument. This will estimate the trajectory, and write it into a file.
+2. `python plot_traj.py` will plot the estimated trajectory against the ground-truth.
 
-Things that can be set in the `main.py` are:
+Parameters that can be set in the `main.py` file are:
 
 * `estimate_scale` which indicates whether we want to estimate scale.
 * `step` is the step size.
