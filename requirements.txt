@@ -45,7 +45,7 @@ matplotlib==2.2.4
 mccabe==0.6.1
 message-filters==1.14.3
 numpy==1.16.5
-opencv-contrib-python==3.4.2.17
+opencv-contrib-python==4.2.0.32
 pathlib2==2.3.5
 pexpect==4.7.0
 pickleshare==0.7.5
