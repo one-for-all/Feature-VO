@@ -32,7 +32,7 @@ gtsam==4.0.2
 image-geometry==1.13.0
 interactive-markers==1.11.4
 ipykernel==4.10.1
-ipython==5.8.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 isort==4.3.21
 jupyter-client==5.3.4
