@@ -1,5 +1,9 @@
 # Feature-based Monocular Visual Odometry
 
+Implements a feature points based method of visual odometry with single camera.
+
+Visual Odometry: https://en.wikipedia.org/wiki/Visual_odometry
+
 ## Dependencies
 
 This is a python2 project, and the following packages are required
